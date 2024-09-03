@@ -25,7 +25,6 @@ Execute the following command, replacing <files> with the space-separated names 
 
 Bash
 python Middle.py -s -f <files> <code>
-Use code with caution.
 
 Receiving Files (Receiver):
 
@@ -37,13 +36,12 @@ Execute the following command, replacing <code> with the code provided by the se
 
 Bash
 python Middle.py -r <code>
-Use code with caution.
 
 Example:
 
 Sender:
 
-python Middle.py -s -f document.txt image.jpg secret_code
+    python Middle.py -s -f document.txt image.jpg secret_code
 
 Receiver:
 python Middle.py -r secret_code
