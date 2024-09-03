@@ -1,4 +1,4 @@
-Freeshare: Secure File Sharing Over WebSockets
+# Freeshare: Secure File Sharing Over WebSockets
 
 This Python script, Middle.py, facilitates secure file sharing between two parties using WebSockets. It operates on a client-server model, where the script can function in either sending or receiving mode.
 
@@ -10,10 +10,9 @@ Command-Line Interface: Provides a user-friendly interface for sending and recei
 Installation:
 
 Prerequisites: Ensure you have Python (version 3.6 or later) and the websockets library installed. You can install websockets using pip install websockets.
-Usage:
 
 Starting the middle man
-python Middle.py -r <code>
+python Middle.py -r /<code/>
 
 Example:
 Sender:
