@@ -2,9 +2,10 @@ import websockets
 import asyncio
 import json
 
-send_connected_dict = {}
+send_connected_dict: set = {}
 PORT = 1234
 print("Middle Man : Ready at: " + str(PORT))
+status: bool = None
 
 
 class Connection:
@@ -12,7 +13,7 @@ class Connection:
         self.code = code
         self.websocket = websocket
         self.action = action
-        self.key = None
+        self.file = None
 
 
 async def listener(websocket):
@@ -21,21 +22,26 @@ async def listener(websocket):
         async for message in websocket:
             data = json.loads(message)
             connection = Connection(data["Code"], websocket, data["Action"])
-            print(
-                "Recived message:" + data["Code"] + "Action:" + data["Action"],
-                "Secret:" + data["Key"],
-            )
+
             if data["Action"] == "Send":
+                print(
+                    "Recived message:" + data["Code"] + "Action:" + data["Action"],
+                    "Secret:" + data["Key"],
+                )
                 response = {"Code": data["Code"], "Status": "Waiting"}
                 await websocket.send(json.dumps(response))
                 send_connected_dict[data["Code"]] = connection
-                connection.key = data["Key"]
+                connection.file = data["ZipFile"]
                 print(data["ZipFile"])
             else:
+                print(
+                    "Recived message:" + data["Code"] + " " + "Action:" + data["Action"]
+                )
                 status = data["Code"] in send_connected_dict.keys()
+                print("Status :" + str(status))
                 web = send_connected_dict[data["Code"]]
-                print(web.key)
-                response = {"Code": data["Code"], "Auth": status, "Key": web.key}
+
+                response = {"Code": data["Code"], "Auth": status, "Zip_file": web.file}
                 print(response)
                 await websocket.send(json.dumps(response))
 
