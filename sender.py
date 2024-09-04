@@ -13,7 +13,7 @@ random_string: str = "".join(random.choice(string.ascii_lowercase) for _ in rang
 data = {"Code": "random_string", "Action": "Send", "Key": random_string}
 
 json_data = json.dumps(data)
-url = "ws://localhost:1234"
+url = "ws://localhost:80"
 
 
 async def send_file(file_path, code):

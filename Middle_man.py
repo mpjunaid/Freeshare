@@ -3,7 +3,7 @@ import asyncio
 import json
 
 send_connected_dict: set = {}
-PORT = 1234
+PORT = 80
 print("Middle Man : Ready at: " + str(PORT))
 status: bool = None
 
