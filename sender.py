@@ -13,7 +13,7 @@ random_string: str = "".join(random.choice(string.ascii_lowercase) for _ in rang
 data = {"Code": "random_string", "Action": "Send", "Key": random_string}
 
 json_data = json.dumps(data)
-url = "ws://localhost:80"
+url = "ws://34.44.108.217:1234"
 
 
 async def send_file(file_path, code):
@@ -35,7 +35,7 @@ async def send_file(file_path, code):
         }
         json_data = json.dumps(data)
 
-    async with websockets.connect(url) as ws:
+    async with websockets.connect(url, timeout=10) as ws:
         await ws.send(json_data)
 
         while True:
