@@ -7,13 +7,15 @@ import websockets
 import asyncio
 import json
 import zipfile
+from Hashing_lib import create_hash
 
 random_string: str = "".join(random.choice(string.ascii_lowercase) for _ in range(8))
 
 data = {"Code": "random_string", "Action": "Send", "Key": random_string}
 
 json_data = json.dumps(data)
-url = "ws://34.44.108.217:1234"
+# url = "ws://34.44.108.217:1234"
+url = "ws://127.0.0.1:1234"
 
 
 async def send_file(file_path, code):
@@ -27,37 +29,35 @@ async def send_file(file_path, code):
             zip_file.write(f, os.path.basename(f))
     with open(zip_file_path, "rb") as f:
         zip_data = f.read()
-        data = {
-            "Code": code,
-            "Action": "Send",
-            "ZipFile": zip_data.decode("latin-1"),
-            "Key": "".join(random.choice(string.ascii_lowercase) for _ in range(8)),
-        }
+        data = {"Code": code, "Action": "Send", "ZipFile": zip_data.decode("latin-1")}
         json_data = json.dumps(data)
 
     async with websockets.connect(url, timeout=10) as ws:
-        await ws.send(json_data)
-
-        while True:
-            msg = await ws.recv()
-            val = json.loads(msg)
-            print(val)
-    asyncio.get_event_loop().run_until_complete(sendfile(files, code))
-
-
-async def receive_file(code):
-    async with websockets.connect(url) as ws:
-        data = {"Code": code, "Action": "Receive"}
-        json_data = json.dumps(data)
-        print(data)
         await ws.send(json_data)
         try:
             while True:
                 msg = await ws.recv()
                 val = json.loads(msg)
                 print(val)
+        except:
+            print("Server Disconnected")
+    # asyncio.get_event_loop().run_until_complete(send_file(files, code))
+
+
+async def receive_file(code):
+    async with websockets.connect(url) as ws:
+        data = {"Code": code, "Action": "Receive"}
+        json_data = json.dumps(data)
+
+        await ws.send(json_data)
+        try:
+            while True:
+                msg = await ws.recv()
+                val = json.loads(msg)
+                # print(val)
                 if val["Auth"]:
-                    print("File found downliading begins:")
+                    print("File recieve code : " + val["Code"])
+                    print("File found downliading begins...")
                     download_folder: str = "Freeshare_Downloads"
                     download_folder = download_folder + "_" + code
                     zip_data = val["Zip_file"]
@@ -82,7 +82,7 @@ async def receive_file(code):
                             download_folder
                         )  # Extract to the download folder
                     os.remove(filepath)
-                    print(f"File received and unzipped: {filepath}")
+                    print(f"File received and unzipped: {download_folder}")
                     return
                 else:
                     print("File not found with code :" + code)
@@ -103,13 +103,14 @@ if __name__ == "__main__":
             sys.exit(1)
         files = sys.argv[3:]
         code = "".join(random.choice(string.ascii_lowercase) for _ in range(8))
-        asyncio.run(send_file(files, code))
+        print("Use the following code to recieve data:" + code)
+        asyncio.run(send_file(files, create_hash(code)))
     elif action == "-r":
         if len(sys.argv) != 3:
             print("Usage: python script.py -r code")
             sys.exit(1)
         code = sys.argv[2]
-        asyncio.run(receive_file(code))
+        asyncio.run(receive_file(create_hash(code)))
     else:
         print("Usage: python script.py [-s|-r] [-f file1 file2 ...]")
         sys.exit(1)
