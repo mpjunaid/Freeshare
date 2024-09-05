@@ -8,19 +8,23 @@ import asyncio
 import json
 import zipfile
 from Hashing_lib import create_hash
+from Encryption import encrypt_data, decrypt_data
+import base64
 
-random_string: str = "".join(random.choice(string.ascii_lowercase) for _ in range(8))
+# random_string: str = "".join(random.choice(string.ascii_lowercase) for _ in range(8))
+Key = base64.urlsafe_b64encode(os.urandom(32))
 
-data = {"Code": "random_string", "Action": "Send", "Key": random_string}
 
-json_data = json.dumps(data)
+# data = {"Code": "random_string", "Action": "Send", "Key": random_string}
+
+# json_data = json.dumps(data)
 # url = "ws://34.44.108.217:1234"
 url = "ws://127.0.0.1:1234"
 
 
 async def send_file(file_path, code):
     zip_file_path = "temp.zip"
-
+    count = 0
     if os.path.exists(zip_file_path):
         os.remove(zip_file_path)
 
@@ -29,22 +33,36 @@ async def send_file(file_path, code):
             zip_file.write(f, os.path.basename(f))
     with open(zip_file_path, "rb") as f:
         zip_data = f.read()
-        data = {"Code": code, "Action": "Send", "ZipFile": zip_data.decode("latin-1")}
+        print("Here")
+        enc_zip_data = encrypt_data(zip_data.decode("latin-1"), Key)
+        print(type(enc_zip_data))
+        data = {
+            "Code": str(code),
+            "Action": "Send",
+            # "ZipFile": enc_zip_data
+            "ZipFile": enc_zip_data,
+        }
         json_data = json.dumps(data)
-
+    os.remove(zip_file_path)
     async with websockets.connect(url, timeout=10) as ws:
         await ws.send(json_data)
         try:
             while True:
                 msg = await ws.recv()
                 val = json.loads(msg)
-                print(val)
+                if val["Status"] == "Check":
+                    count = count + 1
+                    # print("Waiting : " + str(count))
+                    response = {"Code": data["Code"], "Status": "Check"}
+                    await ws.send(json.dumps(response))
+                else:
+                    print(val)
         except:
             print("Server Disconnected")
     # asyncio.get_event_loop().run_until_complete(send_file(files, code))
 
 
-async def receive_file(code):
+async def receive_file(l_key, code):
     async with websockets.connect(url) as ws:
         data = {"Code": code, "Action": "Receive"}
         json_data = json.dumps(data)
@@ -60,7 +78,7 @@ async def receive_file(code):
                     print("File found downliading begins...")
                     download_folder: str = "Freeshare_Downloads"
                     download_folder = download_folder + "_" + code
-                    zip_data = val["Zip_file"]
+                    zip_data = decrypt_data(val["Zip_file"], l_key)
                     # Create a unique filename with timestamp
                     filename = f"{code}_{int(time.time())}.zip"
                     filepath = os.path.join(download_folder, filename)
@@ -102,15 +120,15 @@ if __name__ == "__main__":
             print("Usage: python script.py -s -f file1 file2 ...")
             sys.exit(1)
         files = sys.argv[3:]
-        code = "".join(random.choice(string.ascii_lowercase) for _ in range(8))
-        print("Use the following code to recieve data:" + code)
-        asyncio.run(send_file(files, create_hash(code)))
+        # code = "".join(random.choice(string.ascii_lowercase) for _ in range(16))
+        print("Use the following code to recieve data:" + str(Key.decode()))
+        asyncio.run(send_file(files, create_hash(Key)))
     elif action == "-r":
         if len(sys.argv) != 3:
             print("Usage: python script.py -r code")
             sys.exit(1)
         code = sys.argv[2]
-        asyncio.run(receive_file(create_hash(code)))
+        asyncio.run(receive_file(code, create_hash(code)))
     else:
         print("Usage: python script.py [-s|-r] [-f file1 file2 ...]")
         sys.exit(1)

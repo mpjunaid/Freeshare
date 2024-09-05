@@ -20,6 +20,7 @@ async def listener(websocket):
     print("New connection")
     try:
         async for message in websocket:
+            count = 0
             data = json.loads(message)
             connection = Connection(data["Code"], websocket, data["Action"])
 
@@ -30,6 +31,15 @@ async def listener(websocket):
                 send_connected_dict[data["Code"]] = connection
                 connection.file = data["ZipFile"]
                 # print(data["ZipFile"])
+                while True:
+                    response = {"Code": data["Code"], "Status": "Check"}
+                    await websocket.send(json.dumps(response))
+                    msg = await websocket.recv()
+                    val = json.loads(msg)
+                    if val["Status"] == "Check":
+                        count = count + 1
+
+                    await asyncio.sleep(1)
             else:
                 print(
                     "Recived message:" + data["Code"] + " " + "Action:" + data["Action"]
@@ -68,9 +78,10 @@ async def listener(websocket):
     except:
         print("Disconnected")
         # Add code to del the container object
+    # print(send_connected_dict.keys())
 
 
-start_server = websockets.serve(listener, "localhost", PORT)
+start_server = websockets.serve(listener, "0.0.0.0", PORT)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

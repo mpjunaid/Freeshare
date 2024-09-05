@@ -3,10 +3,14 @@ import hashlib
 
 def create_hash(string):
     """Creates a 30-character hash from a 12-character string using SHA-256."""
-
-    string_bytes = string.encode("utf-8")
     hash_object = hashlib.sha256()
-    hash_object.update(string_bytes)
+    try:
+        string_bytes = string.encode()
+        hash_object.update(string_bytes)
+
+    except:
+        hash_object.update(string)
+
     hash_hex = hash_object.hexdigest()
     return hash_hex[:20]
 
