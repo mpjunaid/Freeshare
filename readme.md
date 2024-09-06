@@ -1,7 +1,22 @@
-# Freeshare
+# Freeshare: A Secure, Hassle-Free File Transfer Tool
 
-Freeshare is a Python script for secure file transfer. It uses encryption and temporary codes for privacy.
+Tired of the complexities of SSH or other file transfer methods? Freeshare offers a simple yet secure solution.
 
+This Python-based tool allows you to effortlessly transfer files between any two computers connected to the internet. By utilizing encryption and temporary codes, Freeshare ensures your data remains private and protected
+
+
+## How it works:
+
+1. Send File: Select and send the file which will generate a Unique Code.
+2. Share the Code: Safely transmit the code to the receiving device (e.g., via email, messaging app).
+3. Receive files: Enter the code on the receiver's side to receive the files.
+   
+## Key Features:
+
+- Secure Encryption: Protects your data from unauthorized access.
+- Unique Codes: Ensures privacy and prevents unauthorized transfers.
+- Easy to Use: Intuitive interface for hassle-free file sharing.
+- Cross-Platform Compatibility: Works on various operating systems
 ### Prerequisites:
 
 - Python 3
