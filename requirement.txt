@@ -1,0 +1,7 @@
+websockets
+asyncio
+json
+hashlib
+cryptography
+zipfile
+base64

@@ -1,22 +1,49 @@
-# Freeshare: Secure File Sharing Over WebSockets
+# Freeshare
 
-This Python script, Middle.py, facilitates secure file sharing between two parties using WebSockets. It operates on a client-server model, where the script can function in either sending or receiving mode.
+Freeshare is a Python script for secure file transfer. It uses encryption and temporary codes for privacy.
 
-Features:
-Secure Communication: Leverages WebSockets for real-time, bidirectional communication, potentially offering enhanced security compared to traditional HTTP requests.
-File Zipping: Packs multiple files into a single ZIP archive for efficient transmission.
-Random Key Generation: Employs random codes for added security in data exchange.
-Command-Line Interface: Provides a user-friendly interface for sending and receiving files.
-Installation:
+### Prerequisites:
 
-Prerequisites: Ensure you have Python (version 3.6 or later) and the websockets library installed. You can install websockets using pip install websockets.
+- Python 3
 
-Starting the middle man
-python Middle.py -r /<code/>
+# Setup:
 
-Example:
-Sender:
-python Middle.py -s -f document.txt image.jpg secret_code
+1. Clone the repository:
 
-Receiver:
-python Middle.py -r secret_code
+   **Bash**
+
+   git clone https://github.com/mpjunaid/Freeshare.git
+
+Install dependencies:
+
+Bash
+pip install -r requirements.txt
+Use code with caution.
+
+Sending Files:
+
+Use the following command to send files:
+
+Bash
+python freeshare.py -s -f file1 file2 ...
+Use code with caution.
+
+Replace file1, file2, etc. with your file names. This generates a unique code for the recipient.
+
+Receiving Files:
+
+Use the following command to receive files:
+
+Bash
+python freeshare.py -r code
+Use code with caution.
+
+Replace code with the received code. Freeshare downloads and extracts files to Freeshare_Downloads/<code/>.
+
+Important Notes:
+
+The generated code is temporary (expiry not specified).
+Stable internet connection is required for both parties.
+Troubleshooting:
+
+If you encounter issues, check the config.ini file (if it exists)
