@@ -6,44 +6,49 @@ Freeshare is a Python script for secure file transfer. It uses encryption and te
 
 - Python 3
 
-# Setup:
+## Setup:
 
 1. Clone the repository:
 
-   **Bash**
+```
+Bash
+git clone https://github.com/mpjunaid/Freeshare.git
+```
 
-   git clone https://github.com/mpjunaid/Freeshare.git
+2. Install dependencies:
 
-Install dependencies:
-
+```
 Bash
 pip install -r requirements.txt
-Use code with caution.
+```
 
-Sending Files:
+## Sending Files:
 
 Use the following command to send files:
 
+```
 Bash
 python freeshare.py -s -f file1 file2 ...
-Use code with caution.
+```
 
 Replace file1, file2, etc. with your file names. This generates a unique code for the recipient.
 
-Receiving Files:
+## Receiving Files:
 
 Use the following command to receive files:
 
+```
 Bash
 python freeshare.py -r code
-Use code with caution.
+```
 
-Replace code with the received code. Freeshare downloads and extracts files to Freeshare_Downloads/<code/>.
+Replace code with the received code. Freeshare downloads and extracts files to _Freeshare_Downloads_code_.
 
-Important Notes:
+#### Important Notes:
 
-The generated code is temporary (expiry not specified).
-Stable internet connection is required for both parties.
-Troubleshooting:
+1. The generated code is temporary (expiry not specified).
+2. Stable internet connection is required for both parties.
 
-If you encounter issues, check the config.ini file (if it exists)
+#### Troubleshooting:
+
+Check if the turn server is wokring or the IP address is the same in github repository and your _freeshare.py_ file
