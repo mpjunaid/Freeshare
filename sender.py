@@ -18,8 +18,8 @@ Key = base64.urlsafe_b64encode(os.urandom(32))
 # data = {"Code": "random_string", "Action": "Send", "Key": random_string}
 
 # json_data = json.dumps(data)
-# url = "ws://34.44.108.217:1234"
-url = "ws://127.0.0.1:1234"
+url = "ws://34.44.108.217:1234"
+# url = "ws://127.0.0.1:1234"
 
 
 async def send_file(file_path, code):
